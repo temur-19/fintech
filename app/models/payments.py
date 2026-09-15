@@ -1,7 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import Mapped, MappedColumn, relationship, mapped_column
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Enum
+from sqlalchemy import Enum, ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, MappedColumn, mapped_column
 
 from db.base import Base
 

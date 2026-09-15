@@ -1,10 +1,7 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, MappedColumn, relationship, mapped_column
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Enum
+from sqlalchemy import Enum, ForeignKey, Integer
+from sqlalchemy.orm import Mapped, MappedColumn, mapped_column
 
 from db.base import Base
-from app.models.users import User
 
 class Transaction(Base):
     __tablename__ = "transactions"
