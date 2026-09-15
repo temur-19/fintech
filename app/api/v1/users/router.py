@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from models.users import User
 from db.base import get_db
-from schemas  import UserCreate
+from api.v1.users.schemas  import UserCreate
 
 
 

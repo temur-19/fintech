@@ -5,8 +5,7 @@ class UserBase(BaseModel):
     id: int | None = Field(None, example=1)
     first_name: str = Field(..., example="John")
     last_name: str = Field(..., example="Doe")
-    card_number: str = Field(..., example="1234-5678-9012-3456")
-    balance: float = Field(..., example=100.0)
+   
 
 class UserCreate(UserBase):
     pass

@@ -7,4 +7,4 @@ app = FastAPI()
 
 app.include_router(users_router, prefix="/api/v1")
 app.include_router(transactions_router, prefix="/api/v1")
-app.include_router(payments_router,prefix="/api/v1")
+app.include_router(payments_router, prefix="/api/v1")
