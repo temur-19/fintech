@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Decimal, Field
+from pydantic import BaseModel, Field
+from decimal import Decimal
 
 from datetime import datetime
 
@@ -7,15 +8,15 @@ class PaymentBase(BaseModel):
     amount: Decimal = Field(..., gt=0)
 
 
-class PaymentStatus(str):
-    pending = "pending"
-    completed = "completed"
-    failed = "failed"
+# class PaymentStatus(str):
+#     pending = "pending"
+#     completed = "completed"
+#     failed = "failed"
 
 class PaymentResponse(PaymentBase):
     id: int
     transaction_id: int
-    status: PaymentStatus
+    # status: PaymentStatus
     created_at: datetime
 
     class Config:

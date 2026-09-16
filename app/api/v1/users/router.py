@@ -32,4 +32,5 @@ async def create_user(user_in:UserCreate, db:AsyncSession = Depends(get_db)):
     await db.refresh(user)      
     return user
 
+
     
