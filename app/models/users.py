@@ -2,7 +2,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import MappedColumn
 import random
 
-from db.base import Base
+from app.db.base import Base
 
 
 

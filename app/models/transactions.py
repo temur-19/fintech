@@ -1,7 +1,7 @@
 from sqlalchemy import Enum, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, MappedColumn, mapped_column
 
-from db.base import Base
+from app.db.base import Base
 
 class Transaction(Base):
     __tablename__ = "transactions"

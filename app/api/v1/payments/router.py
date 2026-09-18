@@ -3,7 +3,7 @@ from sqlalchemy import select
 from typing import List
 
 
-from api.v1.payments.schemas import PaymentResponse
+from api.v1.payments.schemas import PaymentCreate, PaymentResponse
 from models.users import User
 from models.payments import Payment
 
@@ -37,8 +37,15 @@ async def get_payments(user_id:int, db = Depends(get_db)):
     return payments
 
 @payments_router.post('/add/{user_id}')
-async def create_paymment(user_id:int, db = Depends(get_db)):
+async def create_paymment(user_id:int, payment: PaymentCreate, db = Depends(get_db)):
     payment = Payment(
         user_id = user_id,
-        
+        receiver_id = payment.receiver_id,
+        transaction_id = payment.transaction_id,
+        amount = payment.amount,
+        status = payment.status,
+        created_at = payment.created_at
     )
+    db.add(payment)
+    await db.commit()
+    return payment
