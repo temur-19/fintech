@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
+from sqlalchemy import  select
 from typing import List
 
 
 from api.v1.payments.schemas import PaymentCreate, PaymentResponse
 from models.users import User
 from models.payments import Payment
+from models.transactions import Transaction
+from api.v1.users.router import get_user
 
 
 from db.base import get_db
@@ -38,14 +40,46 @@ async def get_payments(user_id:int, db = Depends(get_db)):
 
 @payments_router.post('/add/{user_id}')
 async def create_paymment(user_id:int, payment: PaymentCreate, db = Depends(get_db)):
+
+    current_user = await get_user(user_id, db)
+    receiver = await get_user(payment.receiver_id, db)
+
+    if current_user is None:
+        raise HTTPException(status_code=404, detail="Foydalanuvchi topilmadi")
+    if receiver is None:
+        raise HTTPException(status_code=404, detail="Qabul qiluvchi topilmadi")
+    print("4. Ikkala user ham mavjud")
+    print("Sender balance:", current_user.balance)
+    print("Payment amount:", payment.amount)
+
+    if current_user.balance<payment.amount:
+        raise HTTPException(status_code=404, detail="Balance yetarli emas")
+
+    print("5. Transaction yaratilyapti")
+
+    transaction = Transaction(
+        user_id = user_id,
+        amount = payment.amount,
+        status = payment.status
+    )
+    print(transaction.status)
+    db.add(transaction)
+    await db.flush()
+
+    print("6. Transaction ID:", transaction.id)
+
     payment = Payment(
         user_id = user_id,
         receiver_id = payment.receiver_id,
-        transaction_id = payment.transaction_id,
+        transaction_id = transaction.id,
         amount = payment.amount,
         status = payment.status,
         created_at = payment.created_at
     )
     db.add(payment)
+
+    current_user.balance -= payment.amount
+    receiver.balance += payment.amount
     await db.commit()
+    print("Transaction succes", transaction.id)
     return payment

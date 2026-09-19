@@ -12,12 +12,10 @@ class PaymentStatus(str, Enum):
 
 
 class PaymentBase(BaseModel):
-    user_id: int
     amount: Decimal = Field(..., gt=0)
 
 
 class PaymentCreate(PaymentBase):
-    transaction_id: int
     receiver_id: int
     status: PaymentStatus
     created_at: datetime = Field(
@@ -26,7 +24,6 @@ class PaymentCreate(PaymentBase):
 
 class PaymentResponse(PaymentBase):
     id: int
-    transaction_id: int
     receiver_id: int
     status: PaymentStatus
     created_at: datetime

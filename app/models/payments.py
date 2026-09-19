@@ -4,7 +4,7 @@ from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, MappedColumn, mapped_column
 from datetime import datetime
 
-from app.db.base import Base
+from db.base import Base
 
 
 class Payment(Base):

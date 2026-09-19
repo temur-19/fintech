@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import Select, select
 from typing import List
 
 from api.v1.users.schemas import UserCreate, UserListResponse
@@ -22,6 +22,15 @@ async def get_users(db:AsyncSession = Depends(get_db)):
     users = result.all()
     return {"users":users}
 
+
+@users_router.get('/{user_id}')
+async def get_user(user_id:int, db:AsyncSession = Depends(get_db)):
+    user = Select(User).where(User.id == user_id)
+    result = await db.scalar(user)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Foydalanuvchi topilmadi")
+    return result
+
 @users_router.post('/create/', tags=["Users"])
 async def create_user(user_in:UserCreate, db:AsyncSession = Depends(get_db)):
     user = User(first_name=user_in.first_name,
@@ -31,6 +40,5 @@ async def create_user(user_in:UserCreate, db:AsyncSession = Depends(get_db)):
     await db.commit()
     await db.refresh(user)      
     return user
-
 
     
