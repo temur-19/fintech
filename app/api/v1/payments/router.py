@@ -30,7 +30,7 @@ async def get_balance(user_id:int, db = Depends(get_db) ):
 @payments_router.get('/{user_id}', response_model=List[PaymentResponse])
 async def get_payments(user_id:int, db = Depends(get_db)):
     payments = select(Payment).where(user_id == Payment.user_id)
-    result = await db.scalar(payments)
+    result = await db.scalars(payments)
     if result is None:
         raise HTTPException(status_code=404, detail="To'lov topilmadi")
                 
