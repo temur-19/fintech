@@ -35,3 +35,4 @@ async def get_db():
 
 
 get_async_session = get_db
+

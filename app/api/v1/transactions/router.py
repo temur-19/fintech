@@ -7,6 +7,7 @@ from typing import List
 from db.base import get_db
 from models.transactions import Transaction
 from api.v1.transactions.schemas import TransactionResponse
+from api.v1.transactions.schemas import get_username
 
 
 transactions_router = APIRouter(prefix =  "/transactions",
@@ -17,7 +18,20 @@ transactions_router = APIRouter(prefix =  "/transactions",
 async def get_transactions(user_id:int, db:AsyncSession = Depends(get_db)):
     stmt = Select(Transaction).where(Transaction.user_id == user_id)
     transactions = await db.scalars(stmt)
-    if stmt is None:
-        raise HTTPException(status_code=404, detail="Tranzaksiyalar topilmadi")
     result = transactions.all()
-    return result
+    if result is None:
+            raise HTTPException(status_code=404, detail="Tranzaksiyalar topilmadi")
+    response = []
+    for i in result:
+        userfullname = await get_username(i.user_id,db)
+        response.append(TransactionResponse(
+            id=i.id,
+            user_id=i.user_id,
+            user_name=userfullname,
+            amount=i.amount,
+            status=i.status,
+            created_at=i.created_at
+            ))
+
+
+    return response
