@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import  select
 from typing import List
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from api.v1.payments.schemas import PaymentCreate, PaymentResponse
+from api.v1.payments.schemas import CheckResponse, PaymentCreate, PaymentResponse
+from api.v1.transactions.schemas import TransactionResponse, get_username
 from models.users import User
 from models.payments import Payment
 from models.transactions import Transaction
@@ -83,3 +85,66 @@ async def create_paymment(user_id:int, payment: PaymentCreate, db = Depends(get_
     await db.commit()
     print("Transaction succes", transaction.id)
     return payment
+
+@payments_router.patch("/balance/add/{user_id}", response_model=CheckResponse)
+async def add_money(amount:float, user_id:int, db:AsyncSession = Depends(get_db)):
+    user = select(User).where(User.id == user_id)
+    result = await db.scalar(user)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Bunday id li foydalanuvchi yo'q")
+
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Iltimos, 0 dan katta son kiriting")
+
+    transaction = Transaction(
+        user_id = user_id,
+        amount = amount,
+        status = "completed"
+    )
+    db.add(transaction)
+    await db.flush()
+    result.balance += amount
+    await db.commit()
+    return CheckResponse(
+        user_id = user_id,
+        balance = result.balance,
+        transaction_response = TransactionResponse(     
+            id = transaction.id,
+            user_id = transaction.user_id,
+            user_name = await get_user(user_id, db),
+            amount = transaction.amount,
+            status = transaction.status,
+            created_at = transaction.created_at
+        )
+    )
+
+
+@payments_router.patch("/withdraw/{user_id}", response_model=CheckResponse)
+async def withdraw_money(amount:float, user_id:int, db:AsyncSession = Depends(get_db)):
+    user = select(User).where(User.id == user_id)
+    result = await db.scalar(user)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Bunday id li foydalanuvchi yo'q")
+    if result.balance < amount:
+        raise HTTPException(status_code=400, detail="Balance yetarli emas")
+    transaction = Transaction(
+        user_id = user_id,
+        amount = amount,
+        status = "completed"
+    )
+    db.add(transaction)
+    await db.flush()
+    result.balance -= amount
+    await db.commit()
+    return CheckResponse(
+        user_id = user_id,
+        balance = result.balance,
+        transaction_response = TransactionResponse(
+            id = transaction.id,
+            user_id = transaction.user_id,
+            user_name = await get_username(user_id, db),
+            amount = transaction.amount,
+            status = transaction.status,
+            created_at = transaction.created_at
+        )
+    )

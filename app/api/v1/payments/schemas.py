@@ -3,6 +3,7 @@ from decimal import Decimal
 from datetime import datetime, timezone
 
 from pydantic import BaseModel, Field, ConfigDict
+from api.v1.transactions.schemas import TransactionResponse
 
 
 class PaymentStatus(str, Enum):
@@ -29,3 +30,8 @@ class PaymentResponse(PaymentBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class CheckResponse(BaseModel):
+    user_id: int
+    balance: float
+    transaction_response:TransactionResponse
