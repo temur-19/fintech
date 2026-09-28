@@ -13,9 +13,7 @@ class UserCreate(UserBase):
 class UserUpdate(BaseModel):
     first_name: str | None = Field(None, example="John")
     last_name: str | None = Field(None, example="Doe")
-    card_number: str | None = Field(None, example="1234-5678-9012-3456")
-    balance: float | None = Field(None, example=100.0)
-
+    
 class UserResponse(UserBase):
     id: int = Field(..., example=1)
 

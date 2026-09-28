@@ -2,13 +2,13 @@ from decimal import Decimal
 from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.base import get_db
+from app.db.base import get_db
 from fastapi import Depends
 
 
 from pydantic import BaseModel, Field
 from enum import Enum
-from models.users import User
+from app.models.users import User
 class TransactionStatus(str, Enum):
     pending = "pending"
     completed = "completed"

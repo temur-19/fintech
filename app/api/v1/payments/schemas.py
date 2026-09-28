@@ -3,7 +3,7 @@ from decimal import Decimal
 from datetime import datetime, timezone
 
 from pydantic import BaseModel, Field, ConfigDict
-from api.v1.transactions.schemas import TransactionResponse
+from app.api.v1.transactions.schemas import TransactionResponse
 
 
 class PaymentStatus(str, Enum):

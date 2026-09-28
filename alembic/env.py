@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 from app.db.base import Base
 from app.models import User, Transaction, Payment
-from app.db.base import Base
 
 load_dotenv()
 

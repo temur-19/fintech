@@ -4,15 +4,15 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from api.v1.payments.schemas import CheckResponse, PaymentCreate, PaymentResponse
-from api.v1.transactions.schemas import TransactionResponse, get_username
-from models.users import User
-from models.payments import Payment
-from models.transactions import Transaction
-from api.v1.users.router import get_user
+from app.api.v1.payments.schemas import CheckResponse, PaymentCreate, PaymentResponse
+from app.api.v1.transactions.schemas import TransactionResponse, get_username
+from app.models.users import User
+from app.models.payments import Payment
+from app.models.transactions import Transaction
+from app.api.v1.users.router import get_user
 
 
-from db.base import get_db
+from app.db.base import get_db
 
 payments_router = APIRouter(prefix="/payments",
                             tags=["Payments"]

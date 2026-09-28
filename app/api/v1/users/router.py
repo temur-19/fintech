@@ -6,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import Select, select
 from typing import List
 
-from api.v1.users.schemas import UserCreate, UserListResponse, UserResponse
-from api.v1.transactions.schemas import UserResponse
-from db.base import Session, get_db
-from models.users import User
+from app.api.v1.users.schemas import UserCreate, UserListResponse, UserResponse, UserUpdate
+from app.api.v1.transactions.schemas import UserResponse
+from app.db.base import Session, get_db
+from app.models.users import User
 
 
 
@@ -57,3 +57,17 @@ async def login(form: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = 
     access_token = security.create_access_token(data={"sub": str(user.id)})
     return {"access_token": access_token, "token_type": "bearer"}
 
+@users_router.patch("/update/{user_id}")
+async def update_user(user_in:UserUpdate, user_id:int, db:AsyncSession = Depends(get_db)):
+    stmt = select(User).where(User.id == user_id)
+    user:User = await db.scalar(stmt)
+    if user is None:
+        raise HTTPException(status_code=404, detail="Bunday id li foydalanuvchi mavjud emas")
+
+    user.first_name = user_in.first_name
+    user.last_name = user_in.last_name
+
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return user

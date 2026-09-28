@@ -4,10 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 
-from db.base import get_db
-from models.transactions import Transaction
-from api.v1.transactions.schemas import TransactionResponse
-from api.v1.transactions.schemas import get_username
+from app.db.base import get_db
+from app.models.transactions import Transaction
+from app.api.v1.transactions.schemas import TransactionResponse
+from app.api.v1.transactions.schemas import get_username
 
 
 transactions_router = APIRouter(prefix =  "/transactions",
