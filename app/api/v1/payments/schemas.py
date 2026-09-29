@@ -35,3 +35,4 @@ class CheckResponse(BaseModel):
     user_id: int
     balance: float
     transaction_response:TransactionResponse
+
